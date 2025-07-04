@@ -3,6 +3,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { theme } from "@/theme";
 
 function RouteGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -11,12 +12,34 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
   const segments = useSegments();
   
   useEffect(() => {
-    // Always redirect to onboarding first for now
-    if (segments[0] !== 'onboardingScreen') {
-      router.replace("/onboardingScreen");
-      return;
+    // Set mounted after a short delay to ensure proper initialization
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  useEffect(() => {
+    // Only navigate after component is mounted and user loading is complete
+    if (!isMounted || isLoadingUser) return;
+    
+    const inAuthGroup = segments[0] === '(tabs)';
+    const inOnboarding = segments[0] === 'onboardingScreen';
+    const inAuth = segments[0] === 'auth';
+    
+    if (user) {
+      // User is signed in, redirect to main app if not already there
+      if (!inAuthGroup) {
+        router.replace("/(tabs)");
+      }
+    } else {
+      // User is not signed in, redirect to onboarding if not already there
+      if (!inOnboarding && !inAuth) {
+        router.replace("/onboardingScreen");
+      }
     }
-  }, [segments]);
+  }, [segments, isMounted, user, isLoadingUser]);
   
   return <>{children}</>;
 }
@@ -24,7 +47,7 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <PaperProvider>
+      <PaperProvider theme={theme}>
         <SafeAreaProvider>
           <RouteGuard>
             <Stack>

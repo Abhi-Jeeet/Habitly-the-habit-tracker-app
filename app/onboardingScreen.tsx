@@ -1,35 +1,34 @@
 import { useRouter } from "expo-router";
 import LottieView from 'lottie-react-native';
-import { StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import Onboarding from 'react-native-onboarding-swiper';
+
+const {width, height} = Dimensions.get("window");
 
 export default function OnboardingScreen() {
   const router = useRouter();
   
-  const onDone = () => {
-    router.replace("/auth");
-  };
+const handleDone=()=>{
+  router.push('/auth')
+}
 
-  const onSkip = () => {
-    router.replace("/auth");
-  };
+ 
+
   
   return (
     <View style={styles.container}>
       <Onboarding
       containerStyles={{paddingHorizontal:15}}
-      onDone={onDone}
-      onSkip={onSkip}
-      showSkip={true}
-      showNext={true}
-      showDone={true}
+      onDone={handleDone}
+      onSkip={handleDone}
+      
       pages={[
         {
-        backgroundColor: '#fff',
+        backgroundColor: '#a78bfa',
         image: (
           <View style={styles.lottie}>
           <LottieView 
-            source={require('../assets/animations/AnimationWelcome.json')} 
+            source={require('../assets/animations/Animation.json')} 
             autoPlay 
             loop 
             style={styles.lottieAnimation}
@@ -45,7 +44,7 @@ export default function OnboardingScreen() {
         image: (
           <View style={styles.lottie}>
           <LottieView 
-            source={require('../assets/animations/AnimationWelcome.json')} 
+            source={require('../assets/animations/Animation1.json')} 
             autoPlay 
             loop 
             style={styles.lottieAnimation}
@@ -57,11 +56,11 @@ export default function OnboardingScreen() {
         subtitle: 'Easily monitor your daily habits and stay motivated.',
         },
         {
-        backgroundColor: '#fff',
+        backgroundColor: '#a7f3d0',
         image: (
           <View style={styles.lottie}>
           <LottieView 
-            source={require('../assets/animations/AnimationWelcome.json')} 
+            source={require('../assets/animations/Animation2.json')} 
             autoPlay 
             loop 
             style={styles.lottieAnimation}
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   lottieAnimation: {
-    width: '100%',
-    height: '100%',
+    width: width*0.9,
+    height: width,
   }
 })

@@ -16,4 +16,4 @@ export const theme = {
     outline: '#A5B4FC',
   },
   roundness: 10,
-};
+}; 

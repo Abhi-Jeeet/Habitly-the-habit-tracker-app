@@ -1,4 +1,5 @@
 import { useAuth } from "@/lib/auth-context";
+import { theme } from "@/theme";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
@@ -36,7 +37,7 @@ export default function AuthScreen() {
         setError(error);
         return;
       }
-      router.replace("/")
+      router.replace("/(tabs)")
     }
    
   }
@@ -46,6 +47,9 @@ export default function AuthScreen() {
   const handleSwitch = () => {
     setIsSignup((prev) => !prev);
   };
+
+  
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView
@@ -97,7 +101,7 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: theme.colors.background,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -119,6 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 32,
     textAlign: "center",
+    color: theme.colors.onBackground,
   },
   input: {
     width: "100%",
