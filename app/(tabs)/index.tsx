@@ -1,17 +1,40 @@
-import { DATABASE_ID, databases, HABITLY_COLLECTION_ID } from "@/lib/appwrite";
+import { client, DATABASE_ID, databases, HABITLY_COLLECTION_ID, RealtimeResponse } from "@/lib/appwrite";
 import { useAuth } from "@/lib/auth-context";
 import { Habit } from "@/types/databases.type";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Query } from "react-native-appwrite";
-import { Button, Text } from "react-native-paper";
+import { Button, Surface, Text } from "react-native-paper";
 
 export default function Index() {
   const {signOut, user} = useAuth();
   const [habits, setHabits] = useState<Habit[]>()
   useEffect(()=>{
+    if(user){
+    const channel = `databases.${DATABASE_ID}.collections.${HABITLY_COLLECTION_ID}.documents`
+    const habitSubscription=client.subscribe(channel,
+      (response: RealtimeResponse)=>{
+          if(response.events.includes("databases.*.collections.*.documents.*.create")
+          ){
+        fetchHabits();
+        
+        }else if(response.events.includes("databases.*.collections.*.documents.*.update")
+          ){
+        fetchHabits();
+        }
+        else if(response.events.includes("databases.*.collections.*.documents.*.delete")
+          ){
+        fetchHabits();
+        }
+
+      }
+    );
     fetchHabits();
+    return ()=>{
+      habitSubscription();
+    }
+  }
   },[user])
   const fetchHabits=async()=>{
     try {
@@ -26,49 +49,117 @@ export default function Index() {
     }
   }
   return (
-    <View
-      style={styles.view}
-    >
-      <View>
-      <Text variant="headlineSmall">Today's Habit</Text>
-      <Button mode="text" onPress={signOut} icon={"logout"}>Sign Out</Button>
-    </View>
-    {habits?.length===0?(
-      <View><Text>No habits yet. Add your first Habit</Text></View>
-    ):(
-      habits?.map((habit, key)=>
-      <View key={key}>
-        <Text> {habit.title}</Text>
-        <Text>{habit.description}</Text>
-        <View>
-          <View>
-            <MaterialCommunityIcons name="fire" size={18} color={"#ff9800"} />
-            <Text>{habit.streak_count} day streak</Text>
-          </View>
-          <View>
-            <Text>
-              {habit.frequency.charAt(0).toUpperCase() + habit.frequency.slice(1)}
-            </Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text variant="headlineSmall">Today's Habit</Text>
+        <Button mode="text" onPress={signOut} icon={"logout"}>Sign Out</Button>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+      {habits?.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateText}>No habits yet. Add your first Habit</Text></View>
+      ) : (
+        habits?.map((habit) =>
+          <Surface style={styles.card} elevation={0} key={habit.$id}>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardTitle}>{habit.title}</Text>
+            <Text style={styles.cardDescription}>{habit.description}</Text>
+            <View style={styles.cardFooter}>
+              <View style={styles.streakBadge}>
+                <MaterialCommunityIcons name="fire" size={16} color="#ff9800" style={{ marginRight: 4 }} />
+                <Text style={styles.streakText}>{habit.streak_count} day streak</Text>
+              </View>
+              <View style={styles.frequencyBadge}>
+              <Text style={styles.frequencyText}>{habit.frequency.charAt(0).toUpperCase() + habit.frequency.slice(1)}</Text>
+              </View>
             </View>
-        </View>
-      </View>)
-    )}
+          </View>
+          </Surface>
+        )
+      )}
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  view: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      },
-    navButton:{
-      width:100,
-      height:20,
-      backgroundColor:"coral",
-      borderRadius:8,
-      textAlign:"center",
-
-    },
-})
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 16,
+    alignItems: "center",
+  },
+  header: {
+    marginBottom: 24,
+    alignItems: "center",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    maxWidth: 400,
+  },
+  emptyState: {
+    marginTop: 48,
+    alignItems: "center",
+  },
+  emptyStateText: {
+    color: "#b0a8b9",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  card: {
+    width: 340,
+    borderRadius: 18,
+    backgroundColor: "#faf8ff",
+    marginBottom: 20,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    alignSelf: "center",
+  },
+  cardContent: {
+    padding: 18,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#22223b",
+    marginBottom: 2,
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: "#6c6c80",
+    marginBottom: 14,
+  },
+  cardFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  streakBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff4e6",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  streakText: {
+    color: "#ff9800",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  frequencyBadge: {
+    backgroundColor: "#f3f0fa",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+  },
+  frequencyText: {
+    color: "#b0a8b9",
+    fontWeight: "600",
+    fontSize: 14,
+  },
+});
