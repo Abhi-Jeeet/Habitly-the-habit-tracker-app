@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { ID } from "react-native-appwrite";
-import { Button, SegmentedButtons, TextInput, useTheme,Text } from "react-native-paper";
+import { Button, SegmentedButtons, Text, TextInput, useTheme } from "react-native-paper";
 
 const frequencies = ["daily", "weekly", "monthly"];
 type frequency = (typeof frequencies)[number];

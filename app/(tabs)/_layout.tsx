@@ -13,7 +13,7 @@ export default function TabsLayout() {
           elevation: 0,
           shadowOpacity: 0,
         },
-        tabBarActiveTintColor: "coral",
+        tabBarActiveTintColor: "#6366F1",
       }}
     >
       <Tabs.Screen
