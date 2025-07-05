@@ -1,10 +1,10 @@
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { theme } from "@/theme";
 import { Stack, useRouter, useSegments } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { theme } from "@/theme";
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 function RouteGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();

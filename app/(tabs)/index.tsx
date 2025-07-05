@@ -63,6 +63,10 @@ export default function Index() {
   const handleCompleteHabit=async(id:string)=>{
     if(!user)return;
     try {
+      const habit = habits?.find((h)=>h.$id===id);
+      if(!habit)return;
+      console.log("Updating habit with:", habit);
+      
       await databases.createDocument(DATABASE_ID, HABITLY_COMPLETION_COLLECTION_ID, ID.unique(),
       {
         habit_id:id,
@@ -70,8 +74,9 @@ export default function Index() {
         completed_at:new Date().toISOString()
       }
       );
-      const habit = habits?.find((h)=>h.$id===id);
-      if(!habit)return;
+      
+      console.log("Updating habit with:", habit);
+      
 
       await databases.updateDocument(DATABASE_ID, HABITLY_COLLECTION_ID, id, {
         streak_count:habit.streak_count+1,
@@ -130,8 +135,9 @@ export default function Index() {
               if(direction==='left'){
                 handleDeleteHabit(habit.$id);
               }
-              else if(direction==='right'){
-                handleCompleteHabit(habit.$id)
+              else if(direction==='right'){                
+                handleCompleteHabit(habit.$id);
+
               }
               SwipeableRefs.current[habit.$id]?.close();
             
