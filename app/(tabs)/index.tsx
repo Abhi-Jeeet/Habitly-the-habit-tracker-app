@@ -2,14 +2,18 @@ import { client, DATABASE_ID, databases, HABITLY_COLLECTION_ID, RealtimeResponse
 import { useAuth } from "@/lib/auth-context";
 import { Habit } from "@/types/databases.type";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Query } from "react-native-appwrite";
+import { Swipeable } from "react-native-gesture-handler";
 import { Button, Surface, Text } from "react-native-paper";
 
 export default function Index() {
   const {signOut, user} = useAuth();
   const [habits, setHabits] = useState<Habit[]>()
+  const SwipeableRefs=useRef<{[key:string]:Swipeable|null}>({})
+
+
   useEffect(()=>{
     if(user){
     const channel = `databases.${DATABASE_ID}.collections.${HABITLY_COLLECTION_ID}.documents`
@@ -47,6 +51,37 @@ export default function Index() {
     } catch (error) {
       console.log(error)
     }
+  };
+  const handleDeleteHabit=async(id:string)=>{
+    try {
+      await databases.deleteDocument(DATABASE_ID, HABITLY_COLLECTION_ID, id);
+    } catch (error) {
+      console.error(error);
+      
+    }
+  }
+
+  const renderRightActions=()=>{
+    return (
+      <View style={styles.swipeActionRight}>
+        <MaterialCommunityIcons
+        name="check-circle-outline"
+        size={32}
+        color={'#fff'}
+        />
+      </View>
+    );
+  };
+  const renderLeftActions=()=>{
+    return (
+      <View style={styles.swipeActionLeft}>
+        <MaterialCommunityIcons
+        name="trash-can-outline"
+        size={32}
+        color={'#fff'}
+        />
+      </View>
+    );
   }
   return (
     <View style={styles.container}>
@@ -60,7 +95,24 @@ export default function Index() {
         <View style={styles.emptyState}>
           <Text style={styles.emptyStateText}>No habits yet. Add your first Habit</Text></View>
       ) : (
-        habits?.map((habit) =>
+        habits?.map((habit, key) =>
+          <Swipeable
+          ref={(ref)=>{
+            SwipeableRefs.current[habit.$id]=ref;
+          }}
+          key={key}
+          overshootLeft={false}
+          overshootRight={false}
+          renderLeftActions={renderLeftActions}
+          renderRightActions={renderRightActions}
+          onSwipeableOpen={(direction)=>{
+            if(direction==='left'){
+              handleDeleteHabit(habit.$id);
+            }
+            SwipeableRefs.current[habit.$id]?.close();
+          }}
+
+          >
           <Surface style={styles.card} elevation={0} key={habit.$id}>
           <View style={styles.cardContent}>
             <Text style={styles.cardTitle}>{habit.title}</Text>
@@ -76,6 +128,7 @@ export default function Index() {
             </View>
           </View>
           </Surface>
+          </Swipeable>
         )
       )}
       </ScrollView>
@@ -170,4 +223,25 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 14,
   },
+  swipeActionLeft:{
+    justifyContent:"center",
+    alignItems:"flex-start",
+    flex:1,
+    backgroundColor:"#e53935",
+    borderRadius:20,
+    marginBottom:25,
+    marginTop:1,
+    paddingLeft:16
+
+  },
+  swipeActionRight:{
+    justifyContent:"center",
+    alignItems:"flex-end",
+    flex:1,
+    backgroundColor:"#4caf50",
+    borderRadius:20,
+    marginBottom:25,
+    marginTop:1,
+    paddingRight:16
+  }
 });
