@@ -1,50 +1,97 @@
-# Welcome to your Expo app 👋
+# Habit Tracker Mobile App 📱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, feature-rich habit tracking mobile application built with React Native and Expo. Track your daily habits, build streaks, and achieve your goals with an intuitive and beautiful user interface.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+### 🔐 Authentication
+- Secure user authentication with Appwrite backend
+- User registration and login functionality
+- Persistent session management
 
-   ```bash
-   npm install
-   ```
+### 📋 Habit Management
+- **Create Habits**: Add new habits with custom titles, descriptions, and frequencies
+- **Multiple Frequencies**: Support for daily, weekly, and monthly habits
+- **Swipe Actions**: Intuitive swipe gestures to complete or delete habits
+- **Real-time Updates**: Live synchronization across devices
 
-2. Start the app
+### 🔥 Streak Tracking
+- **Current Streaks**: Track your ongoing habit streaks
+- **Best Streaks**: View your personal best streak records
+- **Total Completions**: See how many times you've completed each habit
+- **Leaderboard**: Rank your habits by their best streaks
 
-   ```bash
-   npx expo start
-   ```
+### 🎨 User Experience
+- **Onboarding Flow**: Beautiful animated introduction for new users
+- **Modern UI**: Clean, intuitive interface with Material Design
+- **Responsive Design**: Optimized for both iOS and Android
+- **Smooth Animations**: Lottie animations for enhanced user experience
 
-In the output, you'll find options to open the app in a
+### 📊 Progress Visualization
+- **Visual Feedback**: Clear indicators for completed habits
+- **Progress Tracking**: Monitor your habit completion over time
+- **Achievement System**: Celebrate your consistency and progress
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠️ Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Frontend**: React Native with Expo
+- **Backend**: Appwrite (Backend-as-a-Service)
+- **Navigation**: Expo Router with file-based routing
+- **UI Components**: React Native Paper
+- **Animations**: Lottie React Native
+- **State Management**: React Context API
+- **TypeScript**: Full type safety
+- **Real-time**: Appwrite Realtime subscriptions
 
-## Get a fresh project
+## 🎯 Key Features Explained
 
-When you're ready, run:
+### Swipe Gestures
+- **Swipe Right**: Mark habit as completed
+- **Swipe Left**: Delete habit
+- Visual feedback with icons and colors
 
-```bash
-npm run reset-project
+### Real-time Synchronization
+The app uses Appwrite's real-time subscriptions to instantly sync data across devices:
+- Habit creation/updates/deletion
+- Completion tracking
+- Streak calculations
+
+### Streak Algorithm
+The streak calculation considers:
+- Consecutive days of completion
+- Best streak tracking
+- Total completion count
+- Automatic streak reset on missed days
+
+
+
+## 📁 Project Structure
+
+```
+habit-tracking-mobile-app/
+├── app/                    # Main application screens
+│   ├── (tabs)/            # Tab-based navigation screens
+│   │   ├── index.tsx      # Home screen with habit list
+│   │   ├── add-habit.tsx  # Add new habit screen
+│   │   ├── streaks.tsx    # Streak tracking screen
+│   │   └── _layout.tsx    # Tab layout configuration
+│   ├── auth.tsx           # Authentication screen
+│   ├── onboardingScreen.tsx # Onboarding flow
+│   └── _layout.tsx        # Root layout
+├── lib/                   # Utility libraries
+│   ├── appwrite.ts        # Appwrite client configuration
+│   ├── auth-context.tsx   # Authentication context
+│   └── onboarding-context.tsx # Onboarding state management
+├── types/                 # TypeScript type definitions
+│   └── databases.type.ts  # Database schema types
+├── assets/                # Static assets
+│   ├── animations/        # Lottie animation files
+│   ├── images/           # App icons and images
+│   └── fonts/            # Custom fonts
+└── theme.ts              # App theme configuration
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+**Built with ❤️ using React Native and Expo**
