@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import LottieView from 'lottie-react-native';
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Onboarding from 'react-native-onboarding-swiper';
 
 const {width, height} = Dimensions.get("window");
@@ -12,6 +12,13 @@ const handleDone=()=>{
   router.push('/auth')
 }
 
+const doneButton=({...props})=>{
+  return(
+    <TouchableOpacity{...props} style={styles.doneButton}>
+    <Text>Done</Text>
+  </TouchableOpacity>
+  )
+}
  
 
   
@@ -21,6 +28,7 @@ const handleDone=()=>{
       containerStyles={{paddingHorizontal:15}}
       onDone={handleDone}
       onSkip={handleDone}
+      DoneButtonComponent={doneButton}
       
       pages={[
         {
@@ -92,5 +100,12 @@ const styles = StyleSheet.create({
   lottieAnimation: {
     width: width*0.9,
     height: width,
+  },
+  doneButton:{
+    padding:20,
+    backgroundColor:"white",
+    borderTopLeftRadius:"100%",
+    borderBottomLeftRadius:"100%"
+
   }
 })
