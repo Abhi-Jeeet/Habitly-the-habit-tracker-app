@@ -1,4 +1,4 @@
-# Habit Tracker Mobile App 📱
+# Habitly: The Habit Tracker App 📱
 
 A modern, feature-rich habit tracking mobile application built with React Native and Expo. Track your daily habits, build streaks, and achieve your goals with an intuitive and beautiful user interface.
 
