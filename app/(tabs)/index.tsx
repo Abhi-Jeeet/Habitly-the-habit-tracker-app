@@ -1,6 +1,6 @@
 import { client, DATABASE_ID, databases, HABITLY_COLLECTION_ID, HABITLY_COMPLETION_COLLECTION_ID, RealtimeResponse } from "@/lib/appwrite";
 import { useAuth } from "@/lib/auth-context";
-import { Habit } from "@/types/databases.type";
+import { Habit, HabitCompletion } from "@/types/databases.type";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -11,13 +11,15 @@ import { Button, Surface, Text } from "react-native-paper";
 export default function Index() {
   const {signOut, user} = useAuth();
   const [habits, setHabits] = useState<Habit[]>()
+  const [completionHabits, setCompletionHabits] = useState<string[]>()
+
   const SwipeableRefs=useRef<{[key:string]:Swipeable|null}>({})
 
 
   useEffect(()=>{
     if(user){
-    const channel = `databases.${DATABASE_ID}.collections.${HABITLY_COLLECTION_ID}.documents`
-    const habitSubscription=client.subscribe(channel,
+    const habitsChannel = `databases.${DATABASE_ID}.collections.${HABITLY_COLLECTION_ID}.documents`
+    const habitSubscription=client.subscribe(habitsChannel,
       (response: RealtimeResponse)=>{
           if(response.events.includes("databases.*.collections.*.documents.*.create")
           ){
@@ -34,9 +36,22 @@ export default function Index() {
 
       }
     );
+    const completionsChannel = `databases.${DATABASE_ID}.collections.${HABITLY_COMPLETION_COLLECTION_ID}.documents`
+    const completionSubscription=client.subscribe(completionsChannel,
+      (response: RealtimeResponse)=>{
+          if(response.events.includes("databases.*.collections.*.documents.*.create")
+          ){
+        fetchTodayCompletions();
+        
+        }
+      }
+    );
+
     fetchHabits();
+    fetchTodayCompletions();
     return ()=>{
       habitSubscription();
+      completionSubscription();
     }
   }
   },[user])
@@ -46,8 +61,24 @@ export default function Index() {
         HABITLY_COLLECTION_ID,
         [Query.equal("user_id", user?.$id?? "")]
       );
+      setHabits(response.documents as Habit[])
+    }catch(error){
+      console.error(error);
+    }
+  }
+  
+  const fetchTodayCompletions=async()=>{
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0);
+      const response = await databases.listDocuments(DATABASE_ID,
+        HABITLY_COMPLETION_COLLECTION_ID,
+        [Query.equal("user_id", user?.$id?? ""), Query.greaterThanEqual("completed_at", today.toISOString())],
+      );
+
+      const completion = response.documents as HabitCompletion[];
       
-      setHabits(response.documents as Habit[]);
+      setCompletionHabits(completion.map((C)=> C.habit_id));
     } catch (error) {
       console.log(error)
     }
@@ -61,7 +92,7 @@ export default function Index() {
     }
   }
   const handleCompleteHabit=async(id:string)=>{
-    if(!user)return;
+    if(!user || completionHabits?.includes(id))return;
     try {
       const habit = habits?.find((h)=>h.$id===id);
       if(!habit)return;
@@ -87,14 +118,19 @@ export default function Index() {
     }
   }
 
-  const renderRightActions=()=>{
+  const isHabitCompleted = (habitId:string)=>completionHabits?.includes(habitId);
+
+  const renderRightActions=(habitId:string)=>{
     return (
       <View style={styles.swipeActionRight}>
-        <MaterialCommunityIcons
+        {isHabitCompleted(habitId)?(
+          <Text style={{color:"#fff"}}>Completed!</Text>
+        ):(<MaterialCommunityIcons
         name="check-circle-outline"
         size={32}
         color={'#fff'}
-        />
+        />)}
+        
       </View>
     );
   };
@@ -130,7 +166,7 @@ export default function Index() {
           overshootLeft={false}
           overshootRight={false}
           renderLeftActions={renderLeftActions}
-          renderRightActions={renderRightActions}
+          renderRightActions={()=>renderRightActions(habit.$id)}
           onSwipeableOpen={(direction)=>{
               if(direction==='left'){
                 handleDeleteHabit(habit.$id);
@@ -144,7 +180,7 @@ export default function Index() {
           }}
 
           >
-          <Surface style={styles.card} elevation={0} key={habit.$id}>
+          <Surface style={[styles.card, isHabitCompleted(habit.$id)&& styles.cardCompleted]} elevation={0} key={habit.$id}>
           <View style={styles.cardContent}>
             <Text style={styles.cardTitle}>{habit.title}</Text>
             <Text style={styles.cardDescription}>{habit.description}</Text>
@@ -207,6 +243,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     // Optional: glassmorphism blur (iOS only, for Android use react-native-blur)
     // backdropFilter: "blur(8px)",
+  },
+  cardCompleted:{
+    opacity:0.6
   },
   cardContent: {
     padding: 22,
