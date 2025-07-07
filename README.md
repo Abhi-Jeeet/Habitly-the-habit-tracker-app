@@ -1,6 +1,6 @@
-# Habitly: The Cross-Platform Habit Tracker App 📱
+# Habitly: The Habit Tracking App 📱
 
-Habitly is a sleek and powerful habit tracking mobile application built with React Native and Expo, designed for both **iOS** and **Android**. It helps you build better routines, track progress, and stay consistent — all with a beautiful and intuitive interface.
+Habitly is a sleek and powerful habit tracking android application built with React Native and Expo. It helps users build better routines, track progress, and stay consistent — all through a beautifully designed and intuitive Android experience.
 
 
 ## ✨ Features
@@ -23,7 +23,6 @@ Habitly is a sleek and powerful habit tracking mobile application built with Rea
 - **Leaderboard**: Rank your habits by their best streaks
 
 ### 🎨 User Experience
-- **Fully Responsive Design**: Optimized for both **iOS** and **Android**
 - **Onboarding Flow**: Beautiful animated introduction for new users
 - **Modern UI**: Clean, intuitive interface with Material Design
 - **Responsive Design**: Optimized for both iOS and Android
@@ -96,4 +95,4 @@ habit-tracking-mobile-app/
 
 
 
-**Built with ❤️ using React Native and Expo**
+**Built with ❤️ by Abhijeet**
