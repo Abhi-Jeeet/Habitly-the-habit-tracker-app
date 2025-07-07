@@ -44,7 +44,7 @@ const doneButton=({...props})=>{
           />
           </View>
         ),
-        title: 'Welcome to Habit Tracker',
+        title: 'Welcome to Habitly: The Habit Tracking App',
         subtitle: 'Build positive habits and achieve your goals every day.',
         },
         {
