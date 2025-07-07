@@ -45,7 +45,7 @@ const doneButton=({...props})=>{
           </View>
         ),
         title: 'Welcome to Habitly: The Habit Tracking App',
-        subtitle: 'Build positive habits and achieve your goals every day.',
+        subtitle: 'Build positive habits and achieve your goals every day.\n\n\n\n\nMade with ❤️ by Abhijeet',
         },
         {
         backgroundColor: '#fff',
@@ -61,7 +61,7 @@ const doneButton=({...props})=>{
           </View>
         ),
         title: 'Track Your Progress',
-        subtitle: 'Easily monitor your daily habits and stay motivated.',
+        subtitle: 'Easily monitor your daily habits and stay motivated',
         },
         {
         backgroundColor: '#a7f3d0',

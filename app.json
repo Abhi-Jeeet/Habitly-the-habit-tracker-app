@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "Habitly",
-    "slug": "habit-tracking-mobile-app",
+    "slug": "Habitly",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "habittrackingmobileapp",
+    "scheme": "habitly",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -17,7 +17,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.abhijeet1651.habittrackingmobileapp"
+      "package": "com.abhijeet1651.habitly",
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
@@ -42,8 +43,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "b67129bc-ee9e-44f6-ad45-624eb3af9e78"
+        "projectId": "157de6b8-dd28-47b7-a79f-9a9812e37f32"
       }
-    }
+    },
+    "owner": "abhijeet1651"
   }
 }
